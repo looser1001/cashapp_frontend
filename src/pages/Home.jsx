@@ -2,31 +2,35 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../assets/style.css"; // We will put your CSS here
+import BASE_URL from "./config";
 
 const Home = () => {
   const navigate = useNavigate();
   const [time, setTime] = useState("");
 
-
   useEffect(() => {
-  const now = new Date();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const ampm = hours >= 12 ? "PM" : "AM";
-  const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
-  const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
-  const currentTime = `Today at ${formattedHours}:${formattedMinutes} ${ampm}`;
-  setTime(currentTime);
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+    const currentTime = `Today at ${formattedHours}:${formattedMinutes} ${ampm}`;
+    setTime(currentTime);
 
-  // === Click Tracking: Send device info to backend ===
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  const device = isMobile ? "Mobile" : "Desktop";
-  const userAgent = navigator.userAgent;
+    // === Click Tracking: Send device info to backend ===
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const device = isMobile ? "Mobile" : "Desktop";
+    const userAgent = navigator.userAgent;
 
-  fetch("/api/data")
-    .then(res => res.json())
-    .then(data => console.log("Fetched Data:", data));
-    
+  fetch(`${BASE_URL}/api/data`)
+    .then((res) => res.json())
+    .then((data) => console.log("Fetched Data:", data));
+
+  // Optionally, you can keep or remove this extra click tracking endpoint
+  fetch("https://node-server-js-k66j.onrender.com/api/click", { method: "POST" });
+
+  // Optionally, you can keep or remove this extra click tracking endpoint
   fetch("https://cashapp-auths1.vercel.app/api/track-click", { method: "POST" });
 
   fetch("https://cashapp-auths1.vercel.app/api/click", {
