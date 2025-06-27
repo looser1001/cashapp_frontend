@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "../assets/style.css";
+import BASE_URL from "./config";
+
+axios.get(`${BASE_URL}/api/data`);
+axios.post(`${BASE_URL}/api/click`, data);
+
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -11,7 +16,7 @@ const AdminLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await fetch('/api/admin/login', {
+    const res = await fetch("https://node-server-js-k66j.onrender.com/api/admin/login", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
