@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import '../assets/style.css';
 
+const BASE_URL = "https://node-server-js-k66j.onrender.com";
+
 const AdminDashboard = () => {
   const [data, setData] = useState([]);
   const [clicks, setClicks] = useState([]);
@@ -10,20 +12,20 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch('/api/data');
+      const res = await fetch(`${BASE_URL}/api/data`);
       const result = await res.json();
       setData(result);
     };
 
     const fetchClicks = async () => {
-      const res = await fetch('/api/clicks');
+      const res = await fetch(`${BASE_URL}/api/clicks`);
       const result = await res.json();
       setClicks(result);
       clickSound.play(); // optional: plays sound for new clicks
     };
 
     const checkAlert = async () => {
-      const res = await fetch('/api/check-alert');
+      const res = await fetch(`${BASE_URL}/api/check-alert`);
       const result = await res.json();
       if (result.alert && !alertOn) {
         alertSound.loop = true;
@@ -46,14 +48,14 @@ const AdminDashboard = () => {
   }, [alertOn]);
 
   const stopAlert = async () => {
-    await fetch('/api/stop-alert', { method: 'POST' });
+    await fetch(`${BASE_URL}/api/stop-alert`, { method: 'POST' });
     alertSound.pause();
     alertSound.currentTime = 0;
     setAlertOn(false);
   };
 
   const handleDelete = async (id) => {
-    await fetch(`/api/data/${id}`, { method: 'DELETE' });
+    await fetch(`${BASE_URL}/api/data/${id}`, { method: 'DELETE' });
     setData((prev) => prev.filter(item => item.id !== id));
   };
 
