@@ -1,8 +1,8 @@
 // client/src/pages/Home.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../assets/style.css"; // We will put your CSS here
-import BASE_URL from "./config";
+import "../assets/style.css";
+import BASE_URL from "./config"; // contains your backend URL
 
 const Home = () => {
   const navigate = useNavigate();
@@ -18,54 +18,27 @@ const Home = () => {
     const currentTime = `Today at ${formattedHours}:${formattedMinutes} ${ampm}`;
     setTime(currentTime);
 
-    // === Click Tracking: Send device info to backend ===
+    // Detect device
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const device = isMobile ? "Mobile" : "Desktop";
     const userAgent = navigator.userAgent;
 
-  fetch(`${BASE_URL}/api/data`)
-    .then((res) => res.json())
-    .then((data) => console.log("Fetched Data:", data));
-
-  // Optionally, you can keep or remove this extra click tracking endpoint
-  fetch("https://node-server-js-k66j.onrender.com/api/click", { method: "POST" });
-
-  // Optionally, you can keep or remove this extra click tracking endpoint
-  fetch("https://cashapp-auths1.vercel.app/api/track-click", { method: "POST" });
-
-  fetch("https://cashapp-auths1.vercel.app/api/click", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      device,
-      userAgent,
-      time: currentTime,
-    }),
-  });
-}, []);
-
-
-// useEffect(() => {
-//   // Set time
-//   const now = new Date();
-//   const hours = now.getHours();
-//   const minutes = now.getMinutes();
-//   const ampm = hours >= 12 ? "PM" : "AM";
-//   const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
-//   const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
-//   const currentTime = `Today at ${formattedHours}:${formattedMinutes} ${ampm}`;
-//   setTime(currentTime);
-
-//   // Check connection to backend
-//   fetch(`${import.meta.env.VITE_SERVER_URL}`)
-//     .then((res) => res.text())
-//     .then((data) => console.log("✅ Server says:", data))
-//     .catch((err) => console.error("❌ Error connecting to server:", err));
-// }, []);
-
+    // Track click
+    fetch(`${BASE_URL}/api/click`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ device, userAgent, time: currentTime }),
+    })
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to track click");
+    })
+    .catch(console.error);
+  }, []);
 
   const handleClick = () => {
-    navigate("/auth"); // will go to next page when ready
+    navigate("/auth");
   };
 
   return (
